@@ -16,3 +16,24 @@ code {
 	margin: 0;
 	padding: 0;
 }
+
+.header {
+	height: 50px;
+	display: block;
+	padding: 0 24px;
+	margin-bottom: 20px;
+	color: #c9e2f1;
+	background: #2b7fc3;
+	border-top: 4px solid #1d5c8f;
+	border-bottom: 2px solid #d7d5d4;
+}
+
+h2 > a {
+	float: left;
+	margin-top: 5px;
+	width: 125px;
+	height: 20px;
+	text-indent: -9999px;
+	text-decoration: none;
+	background: url(https://jobs.github.com/images/layout/logo.png) 0 0 no-repeat;
+}

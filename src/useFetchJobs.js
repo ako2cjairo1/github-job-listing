@@ -5,6 +5,7 @@ const ACTION = {
 	MAKE_REQUEST: 'jobs/make-request',
 	GET_DATA: 'jobs/get-data',
 	ERROR: 'jobs/error',
+	UPDATE_HAS_NEXT_PAGE: 'jobs/update-has-next-page',
 };
 
 const BASE_URL =
@@ -30,6 +31,11 @@ const reducer = (state, { type, payload }) => {
 				jobs: [],
 				error: payload.error,
 			};
+		case ACTION.UPDATE_HAS_NEXT_PAGE:
+			return {
+				...state,
+				hasNextPage: payload.hasNextPage,
+			};
 		default:
 			return state;
 	}
@@ -40,23 +46,49 @@ export default function useFetchJobs(params, page) {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
 	useEffect(() => {
-		const cancelToken = axios.CancelToken.source();
+		const cancelTokenGetData = axios.CancelToken.source();
+		let cancelTokenUpdateHasNextPage;
+
 		dispatch({ type: ACTION.MAKE_REQUEST });
 		axios
 			.get(BASE_URL, {
-				cancelToken: cancelToken.token,
+				cancelToken: cancelTokenGetData.token,
 				params: { markdown: true, page: page, ...params },
 			})
 			.then((response) => {
 				dispatch({ type: ACTION.GET_DATA, payload: { jobs: response.data } });
+
+				cancelTokenUpdateHasNextPage = axios.CancelToken.source();
+				axios
+					.get(BASE_URL, {
+						cancelToken: cancelTokenUpdateHasNextPage.token,
+						params: { markdown: true, page: page + 1, ...params },
+					})
+					.then((response) => {
+						dispatch({
+							type: ACTION.UPDATE_HAS_NEXT_PAGE,
+							payload: { hasNextPage: response.data.length > 0 },
+						});
+					})
+					.catch((e) => {
+						if (axios.isCancel(e)) return;
+						dispatch({
+							type: ACTION.ERROR,
+							payload: { error: e?.response?.statusText },
+						});
+					});
 			})
 			.catch((e) => {
 				if (axios.isCancel(e)) return;
-				dispatch({ type: ACTION.ERROR, payload: { error: e.message } });
+				dispatch({
+					type: ACTION.ERROR,
+					payload: { error: e?.response?.statusText },
+				});
 			});
 
 		return () => {
-			cancelToken.cancel();
+			cancelTokenGetData.cancel();
+			cancelTokenUpdateHasNextPage?.cancel();
 		};
 	}, [params, page]);
 

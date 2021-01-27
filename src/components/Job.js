@@ -21,7 +21,9 @@ export default function Job({
 					<div>
 						<Card.Title>
 							{title} -
-							<span className='text-muted font-weight-light'>{company}</span>
+							<span className='text-muted font-weight-light ml-2'>
+								{company}
+							</span>
 						</Card.Title>
 						<Card.Subtitle className='text-muted mb-2'>
 							{new Date(created_at).toLocaleDateString()}
@@ -43,9 +45,10 @@ export default function Job({
 						/>
 					)}
 				</div>
-				<Card.Text>
+				<Card.Text className='mb-0'>
 					<Button
-						variant='primary'
+						variant='info'
+						size='sm'
 						onClick={() => setToggleDescription((prev) => !prev)}>
 						{toggleDescription ? 'Hide Details' : 'More Details'}
 					</Button>
