@@ -1,7 +1,6 @@
-import React from 'react';
 import './Spinner.css';
 
-export default function Spinner() {
+export default function Spinner(): JSX.Element {
 	return (
 		<div className='d-flex justify-content-center'>
 			<div className='spinner'></div>

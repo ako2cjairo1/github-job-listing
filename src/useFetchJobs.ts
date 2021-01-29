@@ -1,17 +1,25 @@
 import { useReducer, useEffect } from 'react';
-import axios from 'axios';
+import axios, { CancelTokenSource } from 'axios';
 
-const ACTION = {
-	MAKE_REQUEST: 'jobs/make-request',
-	GET_DATA: 'jobs/get-data',
-	ERROR: 'jobs/error',
-	UPDATE_HAS_NEXT_PAGE: 'jobs/update-has-next-page',
+// Type
+import { JobState, SearchCriteria } from './types';
+
+enum ACTION {
+	MAKE_REQUEST = 'jobs/make-request',
+	GET_DATA = 'jobs/get-data',
+	ERROR = 'jobs/error',
+	UPDATE_HAS_NEXT_PAGE = 'jobs/update-has-next-page',
+}
+
+type ActionType = {
+	type: ACTION;
+	payload?: any;
 };
 
 const BASE_URL =
 	'https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions.json';
 
-const reducer = (state, { type, payload }) => {
+const reducer = (state: JobState, { type, payload }: ActionType): JobState => {
 	switch (type) {
 		case ACTION.MAKE_REQUEST:
 			return {
@@ -41,13 +49,15 @@ const reducer = (state, { type, payload }) => {
 	}
 };
 
-export default function useFetchJobs(params, page) {
-	const initialState = { jobs: [], isLoading: true };
-	const [state, dispatch] = useReducer(reducer, initialState);
+export default function useFetchJobs(params: SearchCriteria, page: number) {
+	const initialState: JobState = { jobs: [], isLoading: true };
+	const [state, dispatch] = useReducer<
+		(state: JobState, { type, payload }: ActionType) => JobState
+	>(reducer, initialState);
 
 	useEffect(() => {
-		const cancelTokenGetData = axios.CancelToken.source();
-		let cancelTokenUpdateHasNextPage;
+		const cancelTokenGetData: CancelTokenSource = axios.CancelToken.source();
+		let cancelTokenUpdateHasNextPage: CancelTokenSource;
 
 		dispatch({ type: ACTION.MAKE_REQUEST });
 		axios

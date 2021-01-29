@@ -1,11 +1,14 @@
 import React from 'react';
 import { Col, Form, Button } from 'react-bootstrap';
 
+// Type
+import { SearchJobProps } from '../../types';
+
 export default function SearchJob({
-	params: { description, location, full_time },
+	params: { location, description, full_time },
 	onChangeParams,
 	onSearch,
-}) {
+}: SearchJobProps): JSX.Element {
 	return (
 		<Form className='mb-4' onSubmit={onSearch}>
 			<Form.Row className='align-items-end'>
@@ -35,7 +38,7 @@ export default function SearchJob({
 					<Form.Check
 						type='checkbox'
 						name='full_time'
-						checked={full_time}
+						checked={full_time === 'Full Time' ? true : false}
 						onChange={onChangeParams}
 						label='Full Time Only'
 						className='mb-1'

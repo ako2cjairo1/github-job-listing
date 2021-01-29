@@ -2,25 +2,28 @@ import React, { useState } from 'react';
 import { Container, Col } from 'react-bootstrap';
 
 // Component
-import Header from './components/Header';
-import SearchJob from './components/SearchJob';
-import Job from './components/Job';
-import JobPagination from './components/JobPagination';
-import Spinner from './components/Spinner';
+import Header from '../Header';
+import JobItem, { JobPagination, SearchJob } from '../Job';
+import Spinner from '../Spinner';
 
-import useFetchJobs from './useFetchJobs';
+// Type
+import { Job, SearchCriteria } from '../../types';
 
-const paramInitState = {
+import useFetchJobs from '../../useFetchJobs';
+
+const paramInitState: SearchCriteria = {
 	description: '',
 	location: '',
-	full_time: false,
+	full_time: 'Full Time',
 };
-export default function App() {
+export default function App(): JSX.Element {
 	const [params, setParams] = useState(paramInitState);
 	const [page, setPage] = useState(1);
 	let { jobs, isLoading, error, hasNextPage } = useFetchJobs(params, page);
 
-	const [paramBuilder, setParamBuilder] = useState(paramInitState);
+	const [paramBuilder, setParamBuilder] = useState<SearchCriteria>(
+		paramInitState
+	);
 	const handleParamChange = (e) => {
 		const param = e.target.name;
 		const value =
@@ -39,8 +42,14 @@ export default function App() {
 	const jobsCount = jobs.length;
 
 	const renderPagination = () => {
-		jobsCount > 50 && (
-			<JobPagination page={page} setPage={setPage} hasNextPage={hasNextPage} />
+		return (
+			(hasNextPage || jobsCount === 50) && (
+				<JobPagination
+					page={page}
+					setPage={setPage}
+					hasNextPage={hasNextPage}
+				/>
+			)
 		);
 	};
 
@@ -65,8 +74,8 @@ export default function App() {
 						<>
 							<h3 className='mb-2'>Showing {jobsCount} jobs</h3>
 							{renderPagination()}
-							{jobs.map(({ id, ...rest }) => (
-								<Job key={id} {...rest} />
+							{jobs.map(({ id, ...job }: Job) => (
+								<JobItem key={id} {...job} />
 							))}
 							{renderPagination()}
 						</>

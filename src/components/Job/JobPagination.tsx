@@ -1,7 +1,11 @@
 import React from 'react';
 import { Pagination } from 'react-bootstrap';
 
-export default function JobPagination({ page, setPage, hasNextPage }) {
+export default function JobPagination({
+	page,
+	setPage,
+	hasNextPage,
+}): JSX.Element {
 	const offsetPage = (amount) => setPage((prevPage) => prevPage + amount);
 	return (
 		<Pagination size='sm'>

@@ -1,8 +1,7 @@
-import React from 'react';
 import { Container } from 'react-bootstrap';
-import '../index.css';
+import '../../index.css';
 
-export default function Header() {
+export default function Header(): JSX.Element {
 	return (
 		<div className='header'>
 			<Container>

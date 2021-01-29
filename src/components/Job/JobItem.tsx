@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { Badge, Button, Card, Collapse } from 'react-bootstrap';
 import ReactMarkdown from 'react-markdown';
 
-export default function Job({
+// Types
+import { Job } from '../../types';
+
+export default function JobItem({
 	company,
 	company_logo,
 	description,
@@ -11,7 +14,7 @@ export default function Job({
 	type,
 	created_at,
 	how_to_apply,
-}) {
+}: Job): JSX.Element {
 	const [toggleDescription, setToggleDescription] = useState(false);
 
 	return (
